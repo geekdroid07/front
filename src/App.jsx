@@ -3,10 +3,10 @@ import Nav from './components/Nav';
 import Cards from './components/Cards';
 import axios from 'axios';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import About from './components/About';
+import About from './components/about';
 import Background from './assets/background.jpg'; 
-import Favorites from './components/Favorites';
-import Login from './components/login';
+import Favorites from './components/favorites';
+import Login from './components/Login';
 import Detail from './components/Detail';
 const URI = 'https://rym2.up.railway.app/api/'
 
