@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from "react-redux";
 import Cards from './Cards';
-import { removeFav } from '../redux/actions/actions';
+import { useSelector, useDispatch } from "react-redux";
+import { removeFav, addFav } from '../redux/actions/actions';
 import {useForceUpdate} from '../hooks/useForceUpdate';
 export default function favorites() {
 
   const {allCharacters} = useSelector((state) => state.characters);
-  const [characters, setCharacters] = useState(allCharacters);
+  const [characters, setCharacters] = useState([]);
   const dispatch = useDispatch();
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
-    console.log(characters);
-  }, [characters]);
+    setCharacters(allCharacters.filter(x => x.isFav === true));
+  }, [allCharacters]);
 
   const onClose = (id) => {
     dispatch(removeFav(id));
+    setCharacters(characters.filter(x => x.id !== id));
+    forceUpdate();
+  }
+
+  const handleFavorite = (character) => {
+    if (character.isFav) {
+      dispatch(removeFav(character.id));
+      setCharacters(characters.filter(x => x.id !== character.id));
+    } else {
+      dispatch(addFav(character.id));
+    }
+    forceUpdate();
   }
 
   const filterCards = (event) => {
@@ -53,7 +65,7 @@ export default function favorites() {
           </select>
         </div>
       </div>
-      <Cards characters={characters} onClose={onClose} />
+      <Cards characters={characters} onClose={onClose} handleFavorite={handleFavorite} />
     </>
   )
 }

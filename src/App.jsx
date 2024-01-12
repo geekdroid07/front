@@ -8,11 +8,17 @@ import Background from './assets/background.jpg';
 import Favorites from './components/favorites';
 import Login from './components/Login';
 import Detail from './components/Detail';
+import { useSelector, useDispatch } from "react-redux";
+import {useForceUpdate} from './hooks/useForceUpdate';
+import { removeFav, addFav, removeCharacter, addCharacter } from './redux/actions/actions';
 const URI = 'https://rym2.up.railway.app/api/'
 
 function App() {
-  const [characters, setCharacters] = useState([])
+  const {allCharacters} = useSelector((state) => state.characters);
   const location = useLocation();
+
+  const dispatch = useDispatch();
+  const forceUpdate = useForceUpdate();
 
   const navigate = useNavigate();
   const [access, setAccess] = useState(false);
@@ -33,17 +39,31 @@ function App() {
  }, [access]);
 
   const onClose = (id) => {
-    setCharacters((oldChars) => oldChars.filter((c) => c.id != id));
+    dispatch(removeCharacter(id));
+  }
+
+  
+  const handleFavorite = (character) => {
+    if (character.isFav) {
+      dispatch(removeFav(character.id));
+    } else {
+      dispatch(addFav(character.id));
+    }
+    forceUpdate();
   }
 
   const onSearch = async (id) => {
-    if (characters.some(x => x.id == id)) return window.alert('¡Este personaje ya está en la lista!');
+    try {
+      if (allCharacters.some(x => x.id == id)) return window.alert('¡Este personaje ya está en la lista!');
 
-    const {data} = await axios(`${URI}character/${id}?key=henrystaff`);
-    if (data.name) {
-      setCharacters((oldChars) => [...oldChars, data]);
-    } else {
-      window.alert('¡No hay personajes con este ID!');
+      const {data} = await axios(`${URI}character/${id}?key=henrystaff`);
+      if (data.name) {
+        dispatch(addCharacter(data));
+      } else {
+        window.alert('¡No hay personajes con este ID!');
+      }
+    } catch (error) {
+      window.alert('Ha ocurrido un error: ' + error?.message);
     }
   }
 
@@ -52,7 +72,7 @@ function App() {
       {location.pathname !== '/' && <Nav onSearch={onSearch} />}
       <Routes>
         <Route path="/"  element={<Login login={login} />} />
-        <Route path="/home"  element={<Cards characters={characters} onClose={onClose} />} />
+        <Route path="/home"  element={<Cards characters={allCharacters} onClose={onClose} handleFavorite={handleFavorite} />} />
         <Route path="/about"  element={<About />} />
         <Route path="/detail/:id"  element={<Detail />} />
         <Route path="/favorites"  element={<Favorites />} />

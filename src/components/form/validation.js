@@ -22,6 +22,5 @@ export const validPassword = (password) => {
     if (password.length < 6 || password.length > 10) {
         return "La contraseña debe tener entre 6 y 10 caracteres.";
     }
-    const regex = /^(?=.*[0-9]).{6,10}$/;
-    return regex.test(password);
+    return true;
 }

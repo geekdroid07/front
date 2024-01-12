@@ -21,7 +21,6 @@ export default function Login({login}) {
   const handleChange = (e) => {
     if (e.target.name === 'email') {
       const errorEmail = validEmail(e.target.value);
-      console.log(errorEmail);
       if (errorEmail === true) {
         setErrors({
           ...errors,

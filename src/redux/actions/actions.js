@@ -1,11 +1,9 @@
-
 export const addFav = (payload) => {
     return {
       type: "ADD_FAV",
       payload
     }
 };
-  
 
 export const removeFav = (payload) => {
     return {
@@ -13,19 +11,17 @@ export const removeFav = (payload) => {
       payload
     }
 };
-  
 
-export const filterCards = (state, payload) => {
+export const addCharacter = (payload) => {
     return {
-        ...state,
-        formulario: payload,
-    };
-};
-
-export const orderCards = (state, payload) => {
-    return {
-        ...state,
-        order: payload,
-    };
+      type: "ADD_CHARACTER",
+      payload
+    }
 }
 
+export const removeCharacter = (payload) => {
+    return {
+      type: "REMOVE_CHARACTER",
+      payload
+    }
+}
